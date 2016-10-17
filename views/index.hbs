@@ -16,11 +16,12 @@
 		<li class="span4">
 			<article class="thumbnail">
 				<img src="{{ImageUrl}}" />
-				<div class="info">
+				<div class="info clearfix">
 					<h3>{{Name}}</h3>
-					<span>Price:</span><span>{{Price}}</span>
-					<a style="display:block" href="/cart/add/{{_id}}?ret={{../pageUrl}}">
-					<div class="btn pull-right" ><i class="icon-plus"></i> Add to cart</div>
+					<hr>
+					<b>Price:</span><span>{{Price}}</b>
+					<a class="btn pull-right btn-success" href="/cart/add/{{_id}}?ret={{../pageUrl}}">
+						<i class="icon-plus icon-white"></i> Add to cart
 					</a>
 				</div>
 			</article>
