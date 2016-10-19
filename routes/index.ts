@@ -7,9 +7,9 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req: Request, res: Response, next: Function) {
-  request.get({ url: config.get<string>("dataApi") + "/data/categories" },
+  request.get({ url: config.get<string>("dataApi") + "/data/categories", timeout: 4000 },
     (err, catRes, categories) => {
-      request.get({ url: config.get<string>("dataApi") + "/data/flowers" },
+      request.get({ url: config.get<string>("dataApi") + "/data/flowers", timeout: 4000  },
         (err, flowerRes, flowerList) => {
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
           res.render('index', data)
@@ -18,9 +18,9 @@ router.get('/', function (req: Request, res: Response, next: Function) {
 });
 
 router.get('/checkout', function (req: Request, res: Response, next: Function) {
-  request.get({ url: config.get<string>("dataApi") + "/data/categories" },
+  request.get({ url: config.get<string>("dataApi") + "/data/categories", timeout: 4000  },
     (err, catRes, categories) => {
-      request.get({ url: config.get<string>("dataApi") + "/data/flowers" },
+      request.get({ url: config.get<string>("dataApi") + "/data/flowers", timeout: 4000  },
         (err, flowerRes, flowerList) => {
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout:true }
           res.render('index', data)
@@ -29,10 +29,11 @@ router.get('/checkout', function (req: Request, res: Response, next: Function) {
 });
 
 router.get('/category/:catName', function (req: Request, res: Response, next: Function) {
-  request.get({ url: config.get<string>("dataApi") + "/data/categories" },
+  request.get({ url: config.get<string>("dataApi") + "/data/categories", timeout: 4000  },
     (err, catRes, categories) => {
-      request.get({ url: config.get<string>("dataApi") + "/data/flowers/" + req.params['catName'] },
+      request.get({ url: config.get<string>("dataApi") + "/data/flowers/" + req.params['catName'], timeout: 4000  },
         (err, flowerRes, flowerList) => {
+          if(err) return console.log(err), res.status(500).json(err)
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
           const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
           if (activeCategory) activeCategory.Selected = 'active'
