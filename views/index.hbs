@@ -1,12 +1,10 @@
-{{^checkout}}
-<section cx-url="\{{server:cart}}/cart/summary"></section>
-{{/checkout}}
-
-{{#checkout}}
-<section cx-url="\{{server:cart}}/cart/checkout"></section>
-{{/checkout}}
 <section class="container">
 	<h3>Flower Shop <sup><i class="icon-leaf"></i></sup></h3>
+	{{^checkout}}
+	<section cx-url="\{{server:cart}}/cart/summary"></section>
+	{{/checkout}} {{#checkout}}
+	<section cx-url="\{{server:cart}}/cart/checkout"></section>
+	{{/checkout}}
 	<p class="lead muted">With this Application you can buy your favorite flower as a gift or for your home, it's up to you! Check out our store by
 		choosing a category!</p>
 
