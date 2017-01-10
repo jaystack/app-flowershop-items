@@ -29,6 +29,7 @@
     "request": "^2.75.0",
     "serve-favicon": "~2.3.0",
     "superagent": "^1.7.1",
+    "system-endpoints": "0.0.3",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
@@ -50,7 +51,6 @@
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.12.1",
     "supertest": "^1.1.0",
-    "typescript": "2.1.0-dev.20161011",
-    "system-endpoints": "0.0.2"
+    "typescript": "2.1.0-dev.20161011"
   }
 }
