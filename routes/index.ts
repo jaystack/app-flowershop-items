@@ -8,9 +8,9 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req: Request, res: Response, next: Function) {
-  request.get({ url: `http://${getServiceAddress('localhost:3003')}/data/flowers`, timeout: 4000 },
+  request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers`, timeout: 4000 },
     (err, catRes, categories) => {
-      request.get({ url: getServiceAddress(config.get<string>("dataApi")) + "/data/flowers", timeout: 4000  },
+      request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers`, timeout: 4000  },
         (err, flowerRes, flowerList) => {
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
           res.render('index', data)
@@ -19,9 +19,9 @@ router.get('/', function (req: Request, res: Response, next: Function) {
 });
 
 router.get('/checkout', function (req: Request, res: Response, next: Function) {
-  request.get({ url: `http://${getServiceAddress('localhost:3003')}/data/flowers`, timeout: 4000  },
+  request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers`, timeout: 4000  },
     (err, catRes, categories) => {
-      request.get({ url: getServiceAddress(config.get<string>("dataApi")) + "/data/flowers", timeout: 4000  },
+      request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers`, timeout: 4000  },
         (err, flowerRes, flowerList) => {
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout:true }
           res.render('index', data)
@@ -30,9 +30,9 @@ router.get('/checkout', function (req: Request, res: Response, next: Function) {
 });
 
 router.get('/category/:catName', function (req: Request, res: Response, next: Function) {
-  request.get({ url: `http://${getServiceAddress('localhost:3003')}/data/flowers`, timeout: 4000  },
+  request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers`, timeout: 4000  },
     (err, catRes, categories) => {
-      request.get({ url: `http://${getServiceAddress('localhost:3003')}/data/flowers/` + req.params['catName'], timeout: 4000  },
+      request.get({ url: `http://${getServiceAddress(config.get<string>("dataApi"))}/data/flowers/` + req.params['catName'], timeout: 4000  },
         (err, flowerRes, flowerList) => {
           if(err) return console.log(err), res.status(500).json(err)
           let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
