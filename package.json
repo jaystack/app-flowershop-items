@@ -51,6 +51,6 @@
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.12.1",
     "supertest": "^1.1.0",
-    "typescript": "2.1.0-dev.20161011"
+    "typescript": "2.1.5"
   }
 }
