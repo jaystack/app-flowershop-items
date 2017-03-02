@@ -5,7 +5,10 @@ import { App, Server } from 'corpjs-express'
 import System from 'corpjs-system'
 const { name } = require('../../package.json')
 
-export default new System({ exitOnError: false })
+const inDevelopment = process.env.NODE_ENV === 'dev'
+process.on('unhandledRejection', err => console.error(err))
+
+export default new System({ exitOnError: !inDevelopment })
   .add('config', new Config().add(config => loaders.require({ path: './config/default.js', mandatory: true })))
   .add('endpoints', Endpoints()).dependsOn({ component: 'config', source: 'endpoints', as: 'config' })
   .add('app', App())
