@@ -1,14 +1,18 @@
 {
   "name": "app-flowershop-items",
+  "main": "./server.js",
   "typings": "lib/app",
   "scripts": {
-    "start": "node .",
-    "build": "node_modules/.bin/tsc -p src/app --outDir lib/app",
+    "build": "rimraf lib/app && tsc -p src/app --outDir lib/app",
     "build:w": "node_modules/.bin/tsc -w -p src/app --outDir lib/app",
-    "test": "node_modules/.bin/mocha ./lib/test/*.js",
-    "test_jenkins": "node_modules/.bin/mocha --reporter mocha-junit-reporter ./lib/test/*.js"
+    "build-tests": "rimraf lib && node_modules/.bin/tsc -p src/test --outDir lib",
+    "build-tests:w": "node_modules/.bin/tsc -p -w src/test --outDir lib",
+    "init": "npm run build && node lib/app/initFlowerShop.js",
+    "pretest": "npm run build-tests",
+    "test": "node_modules/.bin/mocha lib/test/**/*.spec.js -c",
+    "prestart": "npm run build",
+    "start": "node ."
   },
-  "main": "./server.js",
   "version": "0.0.0",
   "description": "",
   "license": "",
@@ -55,6 +59,7 @@
     "chai": "^3.5.0",
     "mocha": "^3.1.2",
     "mocha-junit-reporter": "^1.12.1",
+    "rimraf": "^2.6.1",
     "supertest": "^1.1.0",
     "typescript": "^2.2.1"
   }
