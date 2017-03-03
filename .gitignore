@@ -5,3 +5,4 @@ test-results.xml
 test/*.js
 npm-debug.log
 system-endpoints.json
+yarn.lock
