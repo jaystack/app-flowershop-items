@@ -43,8 +43,9 @@ export default function Router() {
       });
 
       router.get('/', (req: Request, res: Response, next: Function) => {
-        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
           (err, catRes, categories) => {
+            console.log("/ -> categories: " + JSON.stringify(categories))
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
               (error, flowerRes, flowerList) => {
                 let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
@@ -54,8 +55,9 @@ export default function Router() {
       });
 
       router.get('/checkout', (req: Request, res: Response, next: Function) => {
-        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000  },
           (err, catRes, categories) => {
+            console.log("/checkout -> categories: " + JSON.stringify(categories))
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
               (error, flowerRes, flowerList) => {
                 let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout:true }
@@ -65,8 +67,9 @@ export default function Router() {
       });
 
       router.get('/category/:catName', (req: Request, res: Response, next: Function) => {
-        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000  },
           (err, catRes, categories) => {
+            console.log("/category/:catName -> categories: " + JSON.stringify(categories))
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers/` + req.params['catName'], timeout: 4000  },
               (error, flowerRes, flowerList) => {
                 if (err) return console.log(err), res.status(500).json(err)
