@@ -27,7 +27,7 @@
     "corpjs-endpoints": "0.0.13",
     "corpjs-express": "0.0.9",
     "corpjs-logger": "0.0.13",
-    "corpjs-system": "0.0.36",
+    "corpjs-system": "0.0.37",
     "cookie-parser": "1.4.3",
     "debug": "2.6.1",
     "express": "4.13.1",
