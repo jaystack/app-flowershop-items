@@ -6,4 +6,3 @@ test/*.js
 .vscode
 npm-debug.log
 system-endpoints.json
-yarn.lock
