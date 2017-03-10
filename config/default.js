@@ -1,9 +1,23 @@
+const { transports } = require('corpjs-logger')
+
 module.exports = {
-  "endpoints": {
-    "endpointsFilePath": 'system-endpoints.json',
-    "normalize": false
+  logger: {
+    transportFactories: [
+      () => new transports.Console({
+        colorize: true,
+        timestamp: true
+      }),
+      () => new transports.File({
+        filename: 'all.logs',
+        timestamp: true
+      })
+    ]
   },
-  "server": {
-    "port": 3001
+  endpoints: {
+    endpointsFilePath: 'system-endpoints.json',
+    normalize: false
+  },
+  server: {
+    port: 3001
   }
 }
