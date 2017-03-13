@@ -2,19 +2,19 @@ import { Request, Response } from "express";
 import * as request from 'request';
 
 import path = require('path');
-import logger = require('morgan');
+import morgan = require('morgan');
 import bodyParser = require('body-parser');
 import cookieParser = require('cookie-parser');
 import express = require('express');
 
 export default function Router() {
   return {
-    async start({endpoints, app}) {
+    async start({ endpoints, app, logger }) {
 
       app.set('views', path.join('./views'));
       app.set('view engine', 'hbs');
 
-      app.use(logger('dev'));
+      app.use(morgan('dev'));
       app.use(bodyParser.json());
       app.use(bodyParser.urlencoded({ extended: false }));
       app.use(cookieParser());
@@ -45,35 +45,50 @@ export default function Router() {
       router.get('/', (req: Request, res: Response, next: Function) => {
         request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
           (err, catRes, categories) => {
-            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
-                res.render('index', data)
+                try {
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
+                  res.render('index', data)
+                } catch (err) {
+                  logger.error(err)
+                  res.render('index', { categories: [], flowerList: [] })
+                }
               })
           })
       });
 
       router.get('/checkout', (req: Request, res: Response, next: Function) => {
-        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000  },
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
           (err, catRes, categories) => {
-            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000  },
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout:true }
-                res.render('index', data)
+                try {
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout: true }
+                  res.render('index', data)
+                } catch (err) {
+                  logger.error(err)
+                  res.render('index', { categories: [], flowerList: [] })
+                }
               })
           })
       });
 
       router.get('/category/:catName', (req: Request, res: Response, next: Function) => {
-        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000  },
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
           (err, catRes, categories) => {
-            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers/` + req.params['catName'], timeout: 4000  },
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers/` + req.params['catName'], timeout: 4000 },
               (error, flowerRes, flowerList) => {
                 if (err) return console.log(err), res.status(500).json(err)
-                let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
-                const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
-                if (activeCategory) activeCategory.Selected = 'active'
-                res.render('index', data)
+                try {
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
+                  const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
+                  if (activeCategory) activeCategory.Selected = 'active'
+                  res.render('index', data)
+                } catch (err) {
+                  logger.error(err)
+                  res.render('index', { categories: [], flowerList: [] })
+                }
               })
           })
       });
@@ -88,5 +103,3 @@ export default function Router() {
     }
   }
 }
-
-
