@@ -5,5 +5,4 @@ test-results.xml
 test/*.js
 .vscode
 *.log
-*.logs
 system-endpoints.json

@@ -8,7 +8,7 @@ module.exports = {
         timestamp: true
       }),
       () => new transports.File({
-        filename: 'all.logs',
+        filename: 'all.log',
         timestamp: true
       })
     ]
