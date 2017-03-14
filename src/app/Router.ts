@@ -74,6 +74,22 @@ export default function Router() {
           })
       });
 
+      router.get('/registration', (req: Request, res: Response, next: Function) => {
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
+          (err, catRes, categories) => {
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
+              (error, flowerRes, flowerList) => {
+                try {
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registration: true }
+                  res.render('index', data)
+                } catch (err) {
+                  logger.error(err)
+                  res.render('index', { categories: [], flowerList: [] })
+                }
+              })
+          })
+      });
+
       router.get('/category/:catName', (req: Request, res: Response, next: Function) => {
         request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
           (err, catRes, categories) => {
