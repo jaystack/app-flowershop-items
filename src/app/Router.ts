@@ -49,6 +49,7 @@ export default function Router() {
               (error, flowerRes, flowerList) => {
                 try {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
+                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
                   res.render('index', data)
                 } catch (err) {
                   logger.error(err)
@@ -82,6 +83,7 @@ export default function Router() {
                 if (err) return console.log(err), res.status(500).json(err)
                 try {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
+                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
                   const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
