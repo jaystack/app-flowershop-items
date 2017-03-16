@@ -22,7 +22,7 @@ export default function Router() {
 
       const router = express.Router()
 
-
+      const shopName = 'Flower Shop'
 
       if (app.get('env') === 'development') {
         app.use((err: any, req: Request, res: Response, next: Function) => {
@@ -48,11 +48,11 @@ export default function Router() {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
                 try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
                   res.render('index', data)
                 } catch (err) {
                   logger.error(err)
-                  res.render('index', { categories: [], flowerList: [] })
+                  res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
           })
@@ -64,11 +64,11 @@ export default function Router() {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
                 try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout: true }
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout: true, shopName }
                   res.render('index', data)
                 } catch (err) {
                   logger.error(err)
-                  res.render('index', { categories: [], flowerList: [] })
+                  res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
           })
@@ -81,13 +81,13 @@ export default function Router() {
               (error, flowerRes, flowerList) => {
                 if (err) return console.log(err), res.status(500).json(err)
                 try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
+                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
                   const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
                 } catch (err) {
                   logger.error(err)
-                  res.render('index', { categories: [], flowerList: [] })
+                  res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
           })
