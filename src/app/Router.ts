@@ -22,6 +22,24 @@ export default function Router() {
 
       const router = express.Router()
 
+      router.use((req, res, next) => {
+        let regResult
+
+        if (!!req.cookies && !!req.cookies["fs_reg_result"]) regResult = (<any>req).cookies["fs_reg_result"]
+        if (!regResult || regResult.showRegResult) regResult = {
+          message: "",
+          error: {},
+          showRegisterButton: true,
+          showRegResult: false,
+          isError: false
+        }
+        req['reg_result'] = regResult
+        console.log('#reg_result:')
+        console.log(regResult)
+
+        next()
+      })
+
       const shopName = 'Flower Shop'
 
       if (app.get('env') === 'development') {
@@ -47,13 +65,18 @@ export default function Router() {
           (err, catRes, categories) => {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
-                  res.render('index', data)
-                } catch (err) {
+                let data, message
+                if (error) {
                   logger.error(err)
-                  res.render('index', { categories: [], flowerList: [], shopName })
+                  data = { categories: [], flowerList: [] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
                 }
+                res.cookie('fs_reg_result', req['reg_result'])
+                data = { ...data, shopName, ...req['reg_result'] }
+                console.log("#Rendering index for /:")
+                console.log({ ...data, flowerList: "{...}" })
+                res.render('index', data)
               })
           })
       });
@@ -79,13 +102,35 @@ export default function Router() {
           (err, catRes, categories) => {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registration: true, shopName }
-                  res.render('index', data)
-                } catch (err) {
+                let data
+                if (err) {
                   logger.error(err)
-                  res.render('index', { categories: [], flowerList: [], shopName })
+                  data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registration: true, shopName, ...req['reg_result'] }
                 }
+                console.log("#Rendering index for /registration:")
+                console.log({ ...data, flowerList: "{...}" })
+                res.render('index', data)
+              })
+          })
+      });
+
+      router.get('/registrationresults', (req: Request, res: Response, next: Function) => {
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
+          (err, catRes, categories) => {
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
+              (error, flowerRes, flowerList) => {
+                let data
+                if (err) {
+                  logger.error(err)
+                  data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registrationresults: true, shopName, ...req['reg_result'] }
+                }
+                console.log("#Rendering index for /registrationresults:")
+                console.log({ ...data, flowerList: "{...}" })
+                res.render('index', data)
               })
           })
       });

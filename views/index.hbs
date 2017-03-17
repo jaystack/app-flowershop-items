@@ -2,15 +2,26 @@
 	<h3>{{shopName}} <sup><i class="icon-leaf"></i></sup></h3>
 	{{^checkout}}
 	<section cx-url="\{{server:cart}}/cart/summary"></section>
-	{{/checkout}} {{#checkout}}
+	{{/checkout}}
+	{{#checkout}}
 	<section cx-url="\{{server:cart}}/cart/checkout"></section>
-	{{/checkout}} {{#registration}}
+	{{/checkout}}
+	{{^registration}}
+	<section cx-url="\{{server:registration}}/registration/register"></section>
+	{{/registration}}
+	{{#registrationresults}}
+	<section cx-url="\{{server:registration}}/registration/registrationresults"></section>
+	{{/registrationresults}}
+	{{#registration}}
 	<section cx-url="\{{server:registration}}/registration/registration"></section>
-	{{/registration}} {{#registration-success}}
+	{{/registration}}
+	{{!--
+	{{#registration-success}}
 	<section cx-url="\{{server:registration}}/registration/success"></section>
 	{{/registration-success}} {{#registration-error}}
 	<section cx-url="\{{server:registration}}/registration/error"></section>
 	{{/registration-error}}
+	--}}
 	<p class="lead muted">With this Application you can buy your favorite flower as a gift or for your home, it's up to you! Check out our store by
 		choosing a category!</p>
 
