@@ -22,6 +22,22 @@ export default function Router() {
 
       const router = express.Router()
 
+      router.use((req, res, next) => {
+        let regResult
+
+        if (!!req.cookies && !!req.cookies["fs_reg_result"]) regResult = (<any>req).cookies["fs_reg_result"]
+        if (!regResult || regResult.showRegResult) regResult = {
+          message: "",
+          error: {},
+          showRegisterButton: true,
+          showRegResult: false,
+          isError: false
+        }
+        req['reg_result'] = regResult
+
+        next()
+      })
+
       const shopName = 'Flower Shop'
 
       if (app.get('env') === 'development') {
@@ -47,14 +63,16 @@ export default function Router() {
           (err, catRes, categories) => {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                try {
-                  let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
-                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
-                  res.render('index', data)
-                } catch (err) {
-                  logger.error(err)
-                  res.render('index', { categories: [], flowerList: [], shopName })
+                let data, message
+                if (error) {
+                  logger.warn(err)
+                  data = { categories: [], flowerList: [] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
                 }
+                data = { ...data, shopName, ...req['reg_result'] }
+                res.cookie('fs_reg_result', req['reg_result'])
+                res.render('index', data)
               })
           })
       });
@@ -68,9 +86,44 @@ export default function Router() {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout: true, shopName }
                   res.render('index', data)
                 } catch (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   res.render('index', { categories: [], flowerList: [], shopName })
                 }
+              })
+          })
+      });
+
+      router.get('/registration', (req: Request, res: Response, next: Function) => {
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
+          (err, catRes, categories) => {
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
+              (error, flowerRes, flowerList) => {
+                let data
+                if (err) {
+                  logger.warn(err)
+                  data = { categories: [], flowerList: [] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
+                }
+                data = { ...data, registration: true, shopName, ...req['reg_result'] }
+                res.render('index', data)
+              })
+          })
+      });
+
+      router.get('/registrationresults', (req: Request, res: Response, next: Function) => {
+        request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/categories`, timeout: 4000 },
+          (err, catRes, categories) => {
+            request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers`, timeout: 4000 },
+              (error, flowerRes, flowerList) => {
+                let data
+                if (err) {
+                  logger.warn(err)
+                  data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
+                } else {
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registrationresults: true, shopName, ...req['reg_result'] }
+                }
+                res.render('index', data)
               })
           })
       });
@@ -80,15 +133,14 @@ export default function Router() {
           (err, catRes, categories) => {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers/` + req.params['catName'], timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                if (err) return console.log(err), res.status(500).json(err)
+                if (err) return logger.warn(err), res.status(500).json(err)
                 try {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
-                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
                   const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
                 } catch (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
