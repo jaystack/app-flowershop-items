@@ -65,13 +65,13 @@ export default function Router() {
               (error, flowerRes, flowerList) => {
                 let data, message
                 if (error) {
-                  logger.error(err)
+                  logger.warn(err)
                   data = { categories: [], flowerList: [] }
                 } else {
                   data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
                 }
-                res.cookie('fs_reg_result', req['reg_result'])
                 data = { ...data, shopName, ...req['reg_result'] }
+                res.cookie('fs_reg_result', req['reg_result'])
                 res.render('index', data)
               })
           })
@@ -86,7 +86,7 @@ export default function Router() {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), checkout: true, shopName }
                   res.render('index', data)
                 } catch (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
@@ -101,10 +101,11 @@ export default function Router() {
                 let data
                 if (err) {
                   logger.warn(err)
-                  data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
+                  data = { categories: [], flowerList: [] }
                 } else {
-                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registration: true, shopName, ...req['reg_result'] }
+                  data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList) }
                 }
+                data = { ...data, registration: true, shopName, ...req['reg_result'] }
                 res.render('index', data)
               })
           })
@@ -139,7 +140,7 @@ export default function Router() {
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
                 } catch (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   res.render('index', { categories: [], flowerList: [], shopName })
                 }
               })
