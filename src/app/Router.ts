@@ -34,8 +34,6 @@ export default function Router() {
           isError: false
         }
         req['reg_result'] = regResult
-        console.log('#reg_result:')
-        console.log(regResult)
 
         next()
       })
@@ -74,8 +72,6 @@ export default function Router() {
                 }
                 res.cookie('fs_reg_result', req['reg_result'])
                 data = { ...data, shopName, ...req['reg_result'] }
-                console.log("#Rendering index for /:")
-                console.log({ ...data, flowerList: "{...}" })
                 res.render('index', data)
               })
           })
@@ -104,13 +100,11 @@ export default function Router() {
               (error, flowerRes, flowerList) => {
                 let data
                 if (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
                 } else {
                   data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registration: true, shopName, ...req['reg_result'] }
                 }
-                console.log("#Rendering index for /registration:")
-                console.log({ ...data, flowerList: "{...}" })
                 res.render('index', data)
               })
           })
@@ -123,13 +117,11 @@ export default function Router() {
               (error, flowerRes, flowerList) => {
                 let data
                 if (err) {
-                  logger.error(err)
+                  logger.warn(err)
                   data = { categories: [], flowerList: [], registration: true, shopName, ...req['reg_result'] }
                 } else {
                   data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), registrationresults: true, shopName, ...req['reg_result'] }
                 }
-                console.log("#Rendering index for /registrationresults:")
-                console.log({ ...data, flowerList: "{...}" })
                 res.render('index', data)
               })
           })
@@ -140,13 +132,9 @@ export default function Router() {
           (err, catRes, categories) => {
             request.get({ url: `http://${endpoints.getServiceAddress(`localhost:3003`)}/data/flowers/` + req.params['catName'], timeout: 4000 },
               (error, flowerRes, flowerList) => {
-                if (err) return console.log(err), res.status(500).json(err)
+                if (err) return logger.warn(err), res.status(500).json(err)
                 try {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
-<<<<<<< HEAD
-=======
-                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
->>>>>>> master
                   const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
