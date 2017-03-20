@@ -143,6 +143,10 @@ export default function Router() {
                 if (err) return console.log(err), res.status(500).json(err)
                 try {
                   let data = { categories: JSON.parse(categories), flowerList: JSON.parse(flowerList), shopName }
+<<<<<<< HEAD
+=======
+                  //data.categories = data.categories.map(c => { c.Name = c.Name + "_molinio"; return c })
+>>>>>>> master
                   const activeCategory = data.categories.find(c => c.Name === req.params['catName']);
                   if (activeCategory) activeCategory.Selected = 'active'
                   res.render('index', data)
