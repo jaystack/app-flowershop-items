@@ -7,7 +7,10 @@ import System from 'corpjs-system'
 const { name } = require('../../package.json')
 
 export default new System({ name })
-  .add('config', new Config().add(config => loaders.require({ path: './config/default.js', mandatory: true })))
+  .add('config', new Config()
+    .add(config => loaders.require({ path: './config/default.js', mandatory: true }))
+    .add(config => loaders.require({ path: './config/molinio.json', mandatory: false }))
+  )
   .add('endpoints', Endpoints()).dependsOn({ component: 'config', source: 'endpoints', as: 'config' })
   .add('logger', Logger()).ignorable().dependsOn({ component: 'config', source: 'logger', as: 'config' })
   .add('app', App())
